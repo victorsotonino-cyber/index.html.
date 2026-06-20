@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gato con Botas | Portafolio de Staff</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght=0,600;1,500&family=Plus+Jakarta+Sans:wght=400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* CORRECCIÓN: Colores con mayor contraste y brillo para evitar el efecto "todo negro" */
+            --bg-dark: #0f0e0c; /* Un tono más claro que el negro absoluto */
+            --card-glass: #181612; /* Tarjetas sólidas y oscuras, ya no transparentes invisibles */
+            --accent-gold: #f1b84d; /* Oro más brillante */
+            --accent-gold-light: #fff0d4; /* Blanco cálido con toque de oro */
+            --accent-crimson: #ff3838; /* Rojo vivo de alta visibilidad */
+            --text-main: #ffffff; /* Blanco puro para lectura limpia */
+            --text-muted: #e2dacd; /* Texto secundario claro */
+            --border-gold: rgba(241, 184, 77, 0.4); /* Bordes más definidos */
+            --glow-gold: 0 0 30px rgba(241, 184, 77, 0.2);
+            --glow-crimson: 0 0 30px rgba(255, 56, 56, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Video de fondo con opacidad controlada para no ensuciar el texto */
+        .anime-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            object-fit: cover;
+            pointer-events: none;
+            opacity: 0.4; /* Reducido para que no compita con las letras */
+        }
+
+        .light-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(15, 14, 12, 0.5) 0%, rgba(7, 6, 5, 0.95) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        h1 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-gold-light), var(--accent-gold), var(--accent-crimson));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 5px;
+            filter: drop-shadow(0 4px 15px rgba(241, 184, 77, 0.4));
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--accent-gold-light);
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-shadow: 0 3px 12px rgba(0,0,0,0.9);
+        }
+
+        /* Bloques de estadísticas con fondo real para romper el fondo negro */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: #1c1914; 
+            border: 1px solid var(--border-gold);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-number {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .stat-desc {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .tab-label {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            padding: 15px 30px;
+            background: #1e1912;
+            border: 1px solid rgba(241, 184, 77, 0.4);
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .tab-label:hover {
+            color: #ffffff;
+            border-color: var(--accent-gold);
+            box-shadow: var(--glow-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Caja de contenido principal - Ahora resalta sólidamente sobre el fondo */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            background: var(--card-glass);
+            border: 2px solid var(--border-gold);
+            border-radius: 24px;
+            padding: 45px;
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.95), var(--glow-gold);
+        }
+
+        /* Estados activos */
+        #tab-perfil:checked ~ .tabs-nav label[for="tab-perfil"] {
+            color: #fff;
+            border-color: var(--accent-gold);
+            box-shadow: var(--glow-gold);
+            background: #2d2417;
+        }
+        #tab-trayectoria:checked ~ .tabs-nav label[for="tab-trayectoria"] {
+            color: #fff;
+            border-color: var(--accent-crimson);
+            box-shadow: var(--glow-crimson);
+            background: #3a1515;
+        }
+        #tab-habilidades:checked ~ .tabs-nav label[for="tab-habilidades"] {
+            color: #fff;
+            border-color: var(--accent-gold);
+            box-shadow: var(--glow-gold);
+            background: #2d2417;
+        }
+
+        #tab-perfil:checked ~ #content-perfil,
+        #tab-trayectoria:checked ~ #content-trayectoria,
+        #tab-habilidades:checked ~ #content-habilidades {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        #tab-trayectoria:checked ~ #content-trayectoria {
+            border-color: var(--accent-crimson);
+            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.95), var(--glow-crimson);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-bottom: 25px;
+            border-left: 6px solid var(--accent-gold);
+            padding-left: 18px;
+        }
+        
+        #content-trayectoria h2 {
+            border-left-color: var(--accent-crimson);
+        }
+
+        p {
+            color: #f7f3eb;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* Tarjetas de servidores interiores con mejor contraste */
+        .server-card {
+            background: #211e18;
+            border: 1px solid rgba(241, 184, 77, 0.2);
+            border-radius: 16px;
+            padding: 26px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+
+        .server-card:hover {
+            transform: scale(1.01) translateX(6px);
+            background: #2a251e;
+            border-color: var(--accent-gold);
+            box-shadow: var(--glow-gold);
+        }
+
+        #content-trayectoria .server-card {
+            border-color: rgba(255, 56, 56, 0.2);
+        }
+
+        #content-trayectoria .server-card:hover {
+            border-color: var(--accent-crimson);
+            box-shadow: var(--glow-crimson);
+            background: #2d1919;
+        }
+
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .server-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .server-badge {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .badge-srmod { background: linear-gradient(135deg, #e65100, #ff6d00); color: #fff; }
+        .badge-coord { background: linear-gradient(135deg, #00838f, #00e5ff); color: #fff; }
+        .badge-manager { background: linear-gradient(135deg, #6a1b9a, #aa00ff); color: #fff; }
+
+        .server-list li {
+            color: #f7f3eb;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 28px;
+            list-style: none;
+            line-height: 1.6;
+        }
+
+        .server-list li::before {
+            content: "⚔️";
+            position: absolute;
+            left: 0;
+            font-size: 0.95rem;
+        }
+
+        #content-trayectoria .server-list li::before {
+            content: "🗡️";
+        }
+
+        .skill-group {
+            margin-bottom: 22px;
+            background: #211e18;
+            padding: 24px;
+            border-radius: 14px;
+            border: 1px solid rgba(241, 184, 77, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .skill-title {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .tabs-nav {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .tab-label {
+                width: 100%;
+                text-align: center;
+            }
+            h1 {
+                font-size: 2.3rem;
+            }
+            .stats-bar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .server-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <video class="anime-bg" autoplay loop muted playsinline>
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-fire-particles-surrounding-a-dark-space-41772-large.mp4" type="video/mp4">
+    </video>
+    
+    <div class="light-overlay"></div>
+
+    <div class="container">
+        <header>
+            <h1>Gato con Botas</h1>
+            <div class="subtitle">Portafolio Profesional de Staff | Administración y Moderación de Servidores</div>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">+5</span>
+                <span class="stat-desc">Años de Experiencia</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">6</span>
+                <span class="stat-desc">Redes Administradas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">100%</span>
+                <span class="stat-desc">Compromiso Técnico</span>
+            </div>
+        </div>
+
+        <input type="radio" name="folders" id="tab-perfil" checked>
+        <input type="radio" name="folders" id="tab-trayectoria">
+        <input type="radio" name="folders" id="tab-habilidades">
+
+        <div class="tabs-nav">
+            <label for="tab-perfil" class="tab-label">📋 Perfil Administrativo</label>
+            <label for="tab-trayectoria" class="tab-label">⚔️ Historial de Servidores</label>
+            <label for="tab-habilidades" class="tab-label">👑 Habilidades Técnicas</label>
+        </div>
+
+        <div class="tab-content" id="content-perfil">
+            <h2>Sobre Mí</h2>
+            <p>Especialista en la gestión, ordenamiento y soporte técnico de redes de Minecraft. Cuento con amplia experiencia coordinando equipos de moderación bajo situaciones de alta presión, asegurando entornos de juego limpios, estables y libres de toxicidad o exploits.</p>
+            <p>Mi enfoque se centra en la organización interna estricta, la resolución justa de reportes mediante revisión profunda de registros, y la comunicación directa y seria con los rangos superiores para mantener el crecimiento constante de la comunidad.</p>
+        </div>
+
+        <div class="tab-content" id="content-trayectoria">
+            <h2>Experiencia como Staff</h2>
+            
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-title">SkylexMC Network</div>
+                    <span class="server-badge badge-srmod">Senior Moderator</span>
+                </div>
+                <ul class="server-list">
+                    <li>Supervisión y control directo del equipo de moderadores en modalidades competitivas.</li>
+                    <li>Revisión forense de logs y bases de datos para resolver apelaciones complejas y falsos positivos.</li>
+                    <li>Capacitación de nuevos miembros del Staff bajo normativas estrictas de comportamiento.</li>
+                </ul>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-title">Mineghost Network</div>
+                    <span class="server-badge badge-coord">Coordinador General</span>
+                </div>
+                <ul class="server-list">
+                    <li>Optimización del sistema de tickets de Discord y soporte web para reducir tiempos de espera.</li>
+                    <li>Organización de horarios del Staff para garantizar una cobertura de moderación las 24 horas.</li>
+                    <li>Canalización de reportes críticos de la comunidad directamente hacia la Administración.</li>
+                </ul>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-title">Minevox Comunidad</div>
+                    <span class="server-badge badge-manager">General Manager</span>
+                </div>
+                <ul class="server-list">
+                    <li>Dirección completa del área de soporte y reclutamiento formal de nuevos perfiles de Staff.</li>
+                    <li>Redacción del reglamento oficial del servidor, normativas de convivencia y tablas de sanciones.</li>
+                    <li>Evaluación periódica del rendimiento del equipo para gestionar ascensos y reestructuraciones.</li>
+                </ul>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-title">Atlantismc Network</div>
+                    <span class="server-badge badge-manager">Media Manager</span>
+                </div>
+                <ul class="server-list">
+                    <li>Gestión y enlace directo con creadores de contenido, streamers y aliados comerciales de la red.</li>
+                    <li>Planificación logística de eventos masivos en el servidor para maximizar el conteo de usuarios concurrentes.</li>
+                    <li>Control de la comunicación pública y comunicados en canales de Discord ante problemas técnicos.</li>
+                </ul>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-title">Downbox Network</div>
+                    <span class="server-badge badge-manager">Media Manager</span>
+                </div>
+                <ul class="server-list">
+                    <li>Gestión y enlace directo con creadores de contenido, streamers y aliados comerciales de la red.</li>
+                    <li>Planificación logística de eventos masivos en el servidor para maximizar el conteo de usuarios concurrentes.</li>
+                    <li>Control de la comunicación pública y comunicados en canales de Discord ante problemas técnicos.</li>
+                </ul>
+            </div>
+
+            <div class="server-card">
+                <div class="server-header">
+                    <div class="server-title">Doombox Server</div>
+                    <span class="server-badge badge-srmod">Moderador</span>
+                </div>
+                <ul class="server-list">
+                    <li>Moderación activa de los canales públicos y servidores de juego para mantener un ambiente limpio.</li>
+                    <li>Sanción de usuarios maliciosos, tóxicos o que utilicen modificaciones ilegales (hacks).</li>
+                    <li>Atención y resolución de dudas o reportes a través del sistema de soporte por tickets.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-content" id="content-habilidades">
+            <h2>Herramientas y Competencias</h2>
+            
+            <div class="skill-group">
+                <div class="skill-title">🛡️ Moderación y Herramientas Avanzadas</div>
+                <p>Manejo total de sistemas de auditoría y sanción fundamentales (CoreProtect, AdvancedBan, LiteBans, Matrix, Vulcan). Capacidad para analizar registros, trazar actividades sospechosas de usuarios y detectar software ilegal de forma objetiva.</p>
+            </div>
+
+            <div class="skill-group">
+                <div class="skill-title">👥 Liderazgo de Equipos y Gestión de Crisis</div>
+                <p>Dirección y orden de equipos Staff en situaciones críticas (ataques masivos de clientes ilegales o caídas de red). Enfoque maduro, ético y con estricto manejo de la confidencialidad de datos internos.</p>
+            </div>
+
+            <div class="skill-group">
+                <div class="skill-title">📜 Redacción Técnica y Comunicación Pulcra</div>
+                <p>Excelente ortografía y expresión para redactar anuncios institucionales claros, guías internas para el Staff, y respuestas formales en tickets de soporte, proyectando seriedad y respeto.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
